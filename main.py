@@ -24,25 +24,31 @@ except Exception as e:
 
 def process_single_file(file_path):
     try:
-        # 准备输出路径
-        output_dir = Path(config['output_dir']) / file_path.stem
+        # 根据配置确定输出路径
+        if config['independent_folders']:
+            output_dir = Path(config['output_dir']) / file_path.stem
+            media_dir = output_dir / config['media_subdir']
+        else:
+            output_dir = Path(config['output_dir'])
+            media_dir = output_dir / config['media_subdir']
+        
         output_dir.mkdir(parents=True, exist_ok=True)
-        media_dir = output_dir / config['media_subdir']
         media_dir.mkdir(exist_ok=True)
 
         # 转换文档并提取图片
         with open(file_path, "rb") as f:
             result = mammoth.convert_to_html(f, convert_image=mammoth.images.img_element(lambda img: convert_image(img, media_dir)))
             
-        # 保存HTML中间文件
-        html_path = output_dir / (file_path.stem + ".html")
-        with open(html_path, "w", encoding="utf-8") as f:
-            f.write(result.value)
+        # 根据配置决定是否保存HTML
+        if config['save_html']:
+            html_path = output_dir / (file_path.stem + ".html")
+            with open(html_path, "w", encoding="utf-8") as f:
+                f.write(result.value)
 
         # 转换HTML为Markdown
         md_content = markdownify(result.value, heading_style="ATX")
         
-        # 保存最终Markdown文件
+        # 确定最终输出路径
         md_path = output_dir / (file_path.stem + ".md")
         with open(md_path, "w", encoding="utf-8") as f:
             f.write(md_content)
@@ -57,7 +63,9 @@ def process_single_file(file_path):
 def convert_image(image, media_dir):
     with image.open() as image_bytes:
         file_ext = image.content_type.split('/')[-1]
-        file_name = f"image_{uuid.uuid4().hex[:6]}.{file_ext}"
+        # 根据配置获取uuid长度（不超过32位）
+        uuid_len = min(config['uuid_length'], 32)
+        file_name = f"image_{uuid.uuid4().hex[:uuid_len]}.{file_ext}"
         save_path = media_dir / file_name
         with open(save_path, "wb") as f:
             shutil.copyfileobj(image_bytes, f)

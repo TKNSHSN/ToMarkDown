@@ -1,6 +1,9 @@
 {
-  "output_dir": "./output",
-  "concurrent_limit": 3,
+  "output_dir": "output",
   "media_subdir": "media",
-  "default_formats": ["doc", "docx"]
+  "default_formats": ["docx"],
+  "concurrent_limit": 4,
+  "save_html": false,
+  "uuid_length": 32,
+  "independent_folders": false
 }
