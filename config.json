@@ -1,0 +1,6 @@
+{
+  "output_dir": "./output",
+  "concurrent_limit": 3,
+  "media_subdir": "media",
+  "default_formats": ["doc", "docx"]
+}
