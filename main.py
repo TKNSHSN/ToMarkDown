@@ -9,6 +9,7 @@ from markdownify import markdownify
 import shutil
 from urllib.parse import urlparse
 import uuid
+from bs4 import BeautifulSoup
 
 # 初始化日志配置
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -39,14 +40,23 @@ def process_single_file(file_path):
         with open(file_path, "rb") as f:
             result = mammoth.convert_to_html(f, convert_image=mammoth.images.img_element(lambda img: convert_image(img, media_dir)))
             
+        # 重构HTML中的表格图片
+        soup = BeautifulSoup(result.value, 'html.parser')
+        for table in soup.find_all('table'):
+            for img in table.find_all('img'):
+                table.insert_after(img)
+            
+        
+        processed_html = str(soup)
+        
         # 根据配置决定是否保存HTML
         if config['save_html']:
             html_path = output_dir / (file_path.stem + ".html")
             with open(html_path, "w", encoding="utf-8") as f:
-                f.write(result.value)
+                f.write(processed_html)
 
         # 转换HTML为Markdown
-        md_content = markdownify(result.value, heading_style="ATX")
+        md_content = markdownify(processed_html, heading_style="ATX")
         
         # 确定最终输出路径
         md_path = output_dir / (file_path.stem + ".md")
