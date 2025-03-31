@@ -12,7 +12,7 @@ import uuid
 from bs4 import BeautifulSoup
 
 # 初始化日志配置
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.ERROR, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # 加载配置文件
 try:
@@ -67,7 +67,9 @@ def process_single_file(file_path):
         
     except Exception as e:
         logging.error(f"处理文件{file_path}失败: {str(e)}")
-        raise
+        fail_dir = Path(config['fail_dir'])
+        fail_dir.mkdir(parents=True, exist_ok=True)
+        shutil.copy(file_path, fail_dir / file_path.name)
 
 # 图片处理回调函数
 def convert_image(image, media_dir):

@@ -3,7 +3,8 @@
   "media_subdir": "media",
   "default_formats": ["docx"],
   "concurrent_limit": 4,
-  "save_html": true,
+  "save_html": false,
   "uuid_length": 32,
-  "independent_folders": true
+  "independent_folders": false,
+  "fail_dir": "failures"
 }
