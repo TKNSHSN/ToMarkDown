@@ -4,11 +4,12 @@
 
 
 
-## 最新版本 
+## 最新版本 v0.31(2025-3-31)
 
 - ✨ **新增**：无
-- 🐛 **修复**：当word内使用表格时，在word内能显示的图片将无法在md中显示。现在我们尝试将图片提出到表格之外放置。 [查看完整更新日志 →](https://github.com/TKNSHSN/ToMarkDown/releases)
-
+- 🐛 **修复**：无
+- 📚 **文档**：将输出在cli的info改为只显示失败的info。转换失败的文件单独复制保存到另一个文件夹。
+ [查看完整更新日志 →](https://github.com/TKNSHSN/ToMarkDown/releases)
 
 
 ## ✨ 功能特性
